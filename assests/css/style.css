@@ -1,0 +1,41 @@
+.link {
+  stroke: #000;
+  stroke-width: 1.5px;
+}
+.node {
+  cursor: move;
+  fill: #ccc;
+  stroke-width: 1.5px;
+}
+.node:hover{
+  fill:#fff!important;
+  stroke:#000;
+}
+svg {
+        position: relative;
+        top: 0;
+        left: 0;
+    }
+#mysvg{
+  width: 960px!important;
+  height:900px!important;
+}
+.thumb{
+	display: none
+}
+svg{
+	max-height: 300px,
+	max-width:500px
+}
+.input,select{
+	min-width: 205px!important;
+	background-color: rgba(20,20,20,0)!important
+}
+.input-group-addon{
+	min-width: 90px;
+	max-width: 90px;
+}
+label{
+	min-width: 100px;
+	max-width: 100px
+}

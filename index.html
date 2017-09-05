@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html ng-app="my-app">
+  <head>
+    <meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Force Graph</title>
+    <script src="lib/angular/angular.min.js"></script>
+		<script src="lib/jquery/jquery-3.2.1.min.js"></script>
+		<script src="lib/bootstrap/js/bootstrap.min.js"></script>
+		<script src="lib/materialize/js\materialize.min.js"></script>
+    <script src="lib/d3/d3.min.js"></script>
+		<link href="lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+		<!-- <link href="lib/materialize/css/materialize.min.css" rel="stylesheet"> -->
+		<link href="assests/css/style.css" rel="stylesheet">
+		<link href="lib/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+  </head>
+  <body ng-controller="main">
+    <section id="mysvg">
+    </section>
+		<span id="tooltip"></span>
+		<div class="" style="position:absolute;top:5px;left:5px;">
+			<button class="btn btn-primary" type="button" onclick="$('section#editor').toggle()">Configure</button>
+		</div>
+		<section id="editor" style="position:absolute;top:8%;left:5%;width:30%;height:85%;overflow:hidden;background-color:rgba(20,210,120,0.2);padding:10px">
+			<form class=".form-inline" action="index.html" method="post">
+			  <div class="input-group mb-2 mr-sm-2 mb-sm-0">
+					<label for="">Link opacity</label>
+					<div class="input-group-addon">{{config.opaq}}</div>
+					<input type="range" ng-model="config.opaq" class="form-control input" min="0" max="1" step="0.1">
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+					<label for="">Outline</label>
+					<div class="input-group-addon">{{config.outline?"true":"false"}}</div>
+					<input type="checkbox" ng-model="config.outline" class="form-control input" >
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+					<label for="">link Color</label>
+					<div class="input-group-addon">{{config.default_link_color}}</div>
+					<input type="color" ng-model="config.default_link_color" class="form-control input" >
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+					<label for="">Tranperancy</label>
+					<div class="input-group-addon">{{config.highlight_trans}}</div>
+					<input type="range" ng-model="config.highlight_trans" class="form-control input" min="0" max="1" step="0.1">
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+					<label for="">Text Color</label>
+					<div class="input-group-addon">{{config.text_color}}</div>
+					<input type="color" ng-model="config.text_color" class="form-control input" >
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0">
+					<label for="">Select Index</label>
+					<div class="input-group-addon reload">{{config.selected_index || "refresh" }}</div>
+					<select class="form-control input" ng-options="index for index in config.elasticdata.index" id="index_input" ng-model="config.selected_index">
+				  </select>
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0" ng-show="config.selected_index">
+					<label for="">Select Type</label>
+					<div  class="input-group-addon reload">{{config.selected_type || "refresh"}}</div>
+					<select ng-options="type for type in config.elasticdata.type" class="input form-control"  id="type_input" ng-model="config.selected_type" >
+				  </select>
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0" ng-show="config.selected_type">
+					<label for="">Select Field</label>
+					<div  class="input-group-addon reload">{{config.selected_field_1 || "refresh"}}</div>
+					<select ng-options="field for field in config.elasticdata.field" class="form-control input" id="field_1_input" ng-model="config.selected_field_1" >
+				  </select>
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0" ng-show="config.selected_type">
+					<label for="">Another Field</label>
+					<div  class="input-group-addon reload">{{config.selected_field_2 || "refresh"}}</div>
+					<select ng-options="field for field in config.elasticdata.field" class="form-control input" id="field_2_input" ng-model="config.selected_field_2" >
+				  </select>
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0" ng-show="config.selected_type">
+					<label for="">Field 1 Color</label>
+					<div class="input-group-addon">{{config.color[0]}}</div>
+					<input type="color" ng-model="config.color[0]" class="form-control input" >
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0" ng-show="config.selected_type">
+					<label for="">Field 2 Color</label>
+					<div class="input-group-addon">{{config.color[1]}}</div>
+					<input type="color" ng-model="config.color[1]" class="form-control input" >
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0" ng-show="config.selected_type">
+					<label for="">Top Hits 1</label>
+					<div class="input-group-addon">{{config.max_bucket[0]}}</div>
+					<input type="range" ng-model="config.max_bucket[0]" class="form-control input" min="0" max="20" step="1">
+				</div>
+				<div class="input-group mb-2 mr-sm-2 mb-sm-0" ng-show="config.selected_type">
+					<label for="">Top Hits 2</label>
+					<div class="input-group-addon">{{config.max_bucket[1]}}</div>
+					<input type="range" ng-model="config.max_bucket[1]" class="form-control input" min="0" max="20" step="1">
+				</div>
+				<input id="fun" class="btn btn-success" value="run">
+				<input id="draw" class="btn btn-success" value="Draw">
+			</form>
+		</section>
+  </body>
+  <script src="assests\js\main2.js"></script>
+</html>
